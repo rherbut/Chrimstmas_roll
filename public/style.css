@@ -1,11 +1,20 @@
+/* Mobile-first styles: większe elementy dotykowe, pełna szerokość, prosty układ */
+
 :root {
   --bg: #f7fbf9;
   --card: #ffffff;
-  --accent: #a8d8d8;
+  --accent: #6fc5c5; /* mocniejszy kontrast na mobile */
   --muted: #6b6b6b;
+  --radius: 12px;
+  --gap: 14px;
+  --maxWidth: 720px;
 }
 * {
   box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
 }
 body {
   margin: 0;
@@ -13,74 +22,94 @@ body {
     Arial;
   background: linear-gradient(180deg, var(--bg), #fff);
   color: #123;
-  padding: 20px;
+  padding: 18px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 18px; /* większa baza na telefonach */
+  line-height: 1.4;
 }
 .container {
-  max-width: 800px;
+  max-width: var(--maxWidth);
   margin: 0 auto;
+  padding: 6px;
 }
 h1 {
   margin: 0 0 12px;
+  font-size: 1.4rem;
 }
 label,
 select {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 select {
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid #e0e6e6;
   width: 100%;
-  max-width: 320px;
+  background: white;
+  font-size: 1rem;
+  -webkit-appearance: none;
+  appearance: none;
 }
+/* Cards */
 .card {
   background: var(--card);
-  border-radius: 10px;
-  padding: 14px;
-  box-shadow: 0 2px 8px rgba(20, 20, 20, 0.06);
-  margin-top: 14px;
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: 0 4px 18px rgba(20, 20, 20, 0.06);
+  margin-top: var(--gap);
 }
+/* wishlist list */
 .wishlist {
   list-style: none;
   padding: 0;
-  margin: 8px 0;
+  margin: 10px 0;
 }
 .wishlist li {
-  padding: 8px;
-  border-radius: 6px;
+  padding: 10px;
+  border-radius: 10px;
   background: #f2f9f9;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  font-size: 0.98rem;
+  word-break: break-word;
 }
 .wishlist a {
   color: #036;
   text-decoration: underline;
+  font-weight: 500;
 }
 #wishRows .row {
   display: flex;
+  flex-direction: column;
   gap: 8px;
-  margin-bottom: 8px;
-  align-items: center;
+  margin-bottom: 12px;
 }
 #wishRows input[type="url"],
 #wishRows input[type="text"] {
-  flex: 1;
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #e6efef;
+  font-size: 1rem;
 }
 .actions {
   display: flex;
-  gap: 12px;
-  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
   margin-top: 8px;
 }
 button {
   background: var(--accent);
   border: 0;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border-radius: 10px;
   cursor: pointer;
+  font-size: 1rem;
+  color: #063;
+  font-weight: 600;
+  width: 100%;
 }
 button:hover {
   opacity: 0.95;
@@ -88,14 +117,174 @@ button:hover {
 .status {
   color: var(--muted);
   font-size: 0.95rem;
+  text-align: center;
 }
 footer {
   margin-top: 16px;
   color: var(--muted);
   font-size: 0.9rem;
+  text-align: center;
 }
-@media (max-width: 600px) {
-  #wishRows .row {
-    flex-direction: column;
+/* Make assigned section content clearer on small screens */
+#assignedSection p#assignedName {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin: 6px 0;
+}
+#assignedSection .wishlist li {
+  background: #eef9f8;
+}
+/* Smaller devices spacing tweak */
+@media (max-width: 420px) {
+  body {
+    padding: 12px;
+    font-size: 17px;
   }
+  h1 {
+    font-size: 1.25rem;
+  }
+  .card {
+    padding: 12px;
+  }
+  #wishRows .row {
+    margin-bottom: 10px;
+  }
+}
+/* Larger screens: restore two-column-ish layout where helpful */
+@media (min-width: 720px) {
+  .container {
+    padding: 12px;
+  }
+  .card {
+    display: block;
+  }
+  #wishRows .row {
+    flex-direction: row;
+  }
+  #wishRows input[type="url"],
+  #wishRows input[type="text"] {
+    flex: 1;
+  }
+  .actions {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  button {
+    width: auto;
+    padding: 10px 16px;
+  }
+  .container {
+    max-width: 900px;
+  }
+}
+/* subtle focus styles for accessibility */
+input:focus,
+select:focus,
+button:focus {
+  outline: 3px solid rgba(111, 197, 197, 0.25);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(111, 197, 197, 0.08);
+}
+.wish-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.wish-controls .hint {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* pojedynczy zgrupowany wiersz: URL nad notatką */
+.wish-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #fff, #fcfffd);
+  border: 1px solid #eef7f6;
+}
+.wish-row input.wish-url {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e6efef;
+  font-size: 1rem;
+}
+.wish-row input.wish-note {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #eef6f5;
+  font-size: 0.98rem;
+}
+
+/* akcje w wierszu (Usuń) */
+.row-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.remove-wish {
+  background: #ffdede;
+  color: #800;
+  border: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.remove-wish:active {
+  transform: translateY(1px);
+}
+
+/* przycisk dodawania globalny */
+#wishRows + .actions,
+.wish-controls button#addWish {
+  /* keep default block styles applied elsewhere */
+}
+#addWish {
+  background: transparent;
+  border: 2px dashed var(--accent);
+  color: var(--accent);
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+#addWish[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.user-banner {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background: linear-gradient(
+    90deg,
+    rgba(111, 197, 197, 0.08),
+    rgba(168, 216, 216, 0.04)
+  );
+  border: 1px solid rgba(111, 197, 197, 0.12);
+  padding: 8px 12px;
+  border-radius: 10px;
+  margin: 10px 0;
+  font-weight: 600;
+  color: #0b4;
+}
+.user-banner .ub-label {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.user-banner .ub-name {
+  background: white;
+  padding: 6px 10px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  color: #064;
+  font-weight: 700;
+  font-size: 1rem;
 }

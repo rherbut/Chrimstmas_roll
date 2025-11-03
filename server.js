@@ -22,14 +22,14 @@ const DATA_FILE = path.join(__dirname, "data.json");
 const ASSIGN_FILE = path.join(__dirname, "assignments.json");
 
 const defaultNames = [
-  "Ania",
-  "Bartek",
-  "Celina",
-  "Daniel",
-  "Ewa",
-  "Filip",
-  "Gosia",
-  "Hubert",
+  "Rafał",
+  "Justyna",
+  "Janusz",
+  "Violetta",
+  "Babcia Misia",
+  "Babcia Irena",
+  "Karol",
+  "Hania",
 ];
 
 function readJson(filePath, fallback) {
@@ -145,6 +145,14 @@ app.post("/wishlist", (req, res) => {
 // Fallback to index.html for root
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// zamiast sprawdzania Accept zwracamy index.html dla wszystkich nieobsłużonych GET-ów
+app.get("*", (req, res) => {
+  if (req.method === "GET") {
+    return res.sendFile(path.join(__dirname, "public", "index.html"));
+  }
+  res.status(404).end();
 });
 
 // zamiast bezpośredniego app.listen przechowujemy server, żeby móc je zamknąć

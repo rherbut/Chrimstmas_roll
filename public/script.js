@@ -5,31 +5,174 @@ const wishRows = document.getElementById("wishRows");
 const wishlistForm = document.getElementById("wishlistForm");
 const statusEl = document.getElementById("status");
 
-let usersData = { users: [] };
+// references to sections and add button
+const assignedSection = document.getElementById("assignedSection");
+const editSection = document.getElementById("editSection");
+const addWishBtn = document.getElementById("addWish");
 
+// new refs for title and label to hide on /Imie
+const mainTitle = document.getElementById("mainTitle");
+const userLabel = document.getElementById("userLabel");
+
+// new banner refs
+const userBanner = document.getElementById("userBanner");
+const userBannerName = document.getElementById("userBannerName");
+
+let usersData = { users: [] };
+const MAX_WISHES = 5;
+
+// detect if we are on a name page like "/Ania"
+const pathName = decodeURIComponent(location.pathname || "/");
+const currentNameFromPath =
+  pathName && pathName !== "/" ? pathName.slice(1) : "";
+
+// fetch users and then initialize UI according to path
 async function fetchUsers() {
   const res = await fetch("/users");
   usersData = await res.json();
   populateUserSelect();
+
+  // If URL contains a name, try to show that user's view immediately
+  if (currentNameFromPath) {
+    // hide select and header on name pages
+    if (userLabel) userLabel.style.display = "none";
+    if (mainTitle) mainTitle.style.display = "none";
+    if (userSelect) userSelect.style.display = "none";
+
+    // show banner with nice formatting
+    if (userBanner && userBannerName) {
+      userBannerName.textContent = currentNameFromPath;
+      userBanner.style.display = "";
+    }
+
+    // set select value if exists (for form submission convenience)
+    const exists = usersData.users.some((u) => u.name === currentNameFromPath);
+    if (exists) {
+      userSelect.value = currentNameFromPath;
+      // show sections and load data
+      assignedSection.style.display = "";
+      editSection.style.display = "";
+      await onUserChange(currentNameFromPath);
+    } else {
+      // brak użytkownika — pokaż placeholder info
+      assignedSection.style.display = "";
+      editSection.style.display = "none";
+      assignedNameEl.textContent = "Nieznany użytkownik";
+      assignedWishlistEl.innerHTML = "";
+    }
+  } else {
+    // on root: ensure select and header are visible and sections hidden until selection
+    if (userLabel) userLabel.style.display = "";
+    if (mainTitle) mainTitle.style.display = "";
+    if (userSelect) userSelect.style.display = "";
+    assignedSection.style.display = "none";
+    editSection.style.display = "none";
+    // hide banner on root
+    if (userBanner) userBanner.style.display = "none";
+  }
 }
 
 function populateUserSelect() {
   userSelect.innerHTML = "";
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "-- Wybierz imię --";
+  placeholder.selected = true;
+  placeholder.disabled = true;
+  userSelect.appendChild(placeholder);
+
   usersData.users.forEach((u) => {
     const opt = document.createElement("option");
     opt.value = u.name;
     opt.textContent = u.name;
     userSelect.appendChild(opt);
   });
-  if (usersData.users.length) {
-    userSelect.value = usersData.users[0].name;
-    onUserChange();
-  }
+
+  updateAddButtonState();
 }
 
-async function onUserChange() {
-  const name = userSelect.value;
-  // assigned
+function createWishRow(item = { url: "", note: "" }) {
+  const row = document.createElement("div");
+  row.className = "wish-row";
+
+  const url = document.createElement("input");
+  url.type = "url";
+  url.placeholder = "URL prezentu";
+  url.className = "wish-url";
+  url.value = item.url || "";
+
+  const note = document.createElement("input");
+  note.type = "text";
+  note.placeholder = "Krótka notatka";
+  note.className = "wish-note";
+  note.value = item.note || "";
+
+  const actions = document.createElement("div");
+  actions.className = "row-actions";
+
+  const removeBtn = document.createElement("button");
+  removeBtn.type = "button";
+  removeBtn.className = "remove-wish";
+  removeBtn.textContent = "Usuń";
+  removeBtn.addEventListener("click", () => {
+    row.remove();
+    updateAddButtonState();
+  });
+
+  actions.appendChild(removeBtn);
+
+  // URL above note
+  row.appendChild(url);
+  row.appendChild(note);
+  row.appendChild(actions);
+
+  return row;
+}
+
+function fillWishInputs(wishlist) {
+  wishRows.innerHTML = "";
+  const items = Array.isArray(wishlist) ? wishlist : [];
+  if (items.length === 0) {
+    // dodaj jeden pusty wiersz, żeby użytkownik mógł szybko dodać
+    wishRows.appendChild(createWishRow());
+  } else {
+    items.forEach((it) => wishRows.appendChild(createWishRow(it)));
+  }
+  updateAddButtonState();
+}
+
+function updateAddButtonState() {
+  const count = wishRows.querySelectorAll(".wish-row").length;
+  addWishBtn.disabled = count >= MAX_WISHES;
+  addWishBtn.textContent =
+    count >= MAX_WISHES ? "Limit osiągnięty" : "+ Dodaj życzenie";
+}
+
+addWishBtn.addEventListener("click", () => {
+  const count = wishRows.querySelectorAll(".wish-row").length;
+  if (count >= MAX_WISHES) return;
+  wishRows.appendChild(createWishRow());
+  updateAddButtonState();
+});
+
+async function onUserChange(overrideName) {
+  const name = overrideName || userSelect.value;
+  if (!name) {
+    assignedSection.style.display = "none";
+    editSection.style.display = "none";
+    assignedNameEl.textContent = "—";
+    assignedWishlistEl.innerHTML = "";
+    fillWishInputs([]);
+    return;
+  }
+
+  // update banner when a name is active (show inline, estetycznie)
+  if (userBanner && userBannerName) {
+    userBannerName.textContent = name;
+    userBanner.style.display = "";
+  }
+
+  // fetch assigned data for the selected name
   const res = await fetch(`/assigned/${encodeURIComponent(name)}`);
   const data = await res.json();
   if (!data.assigned) {
@@ -53,7 +196,8 @@ async function onUserChange() {
         assignedWishlistEl.appendChild(li);
       });
     } else {
-      assignedWishlistEl.innerHTML = "<li>Brak życzeń</li>";
+      assignedWishlistEl.innerHTML =
+        "<li>Nie dodał/dodała jeszcze listy życzeń</li>";
     }
   }
 
@@ -62,40 +206,33 @@ async function onUserChange() {
   fillWishInputs(me.wishlist || []);
 }
 
-function fillWishInputs(wishlist) {
-  wishRows.innerHTML = "";
-  const max = 5;
-  for (let i = 0; i < max; i++) {
-    const row = document.createElement("div");
-    row.className = "row";
-    const url = document.createElement("input");
-    url.type = "url";
-    url.placeholder = "URL prezentu";
-    url.name = `url_${i}`;
-    url.value = wishlist[i] ? wishlist[i].url : "";
-    const note = document.createElement("input");
-    note.type = "text";
-    note.placeholder = "Krótka notatka";
-    note.name = `note_${i}`;
-    note.value = wishlist[i] ? wishlist[i].note : "";
-    row.appendChild(url);
-    row.appendChild(note);
-    wishRows.appendChild(row);
+// override change behavior: on root redirect to /Name, on /Name just handle normally
+userSelect.addEventListener("change", () => {
+  const chosen = userSelect.value;
+  if (!chosen) return;
+  if (!currentNameFromPath) {
+    // we are on root — redirect to /Name
+    location.href = "/" + encodeURIComponent(chosen);
+  } else {
+    // we are on a name page but select may still be visible — just update view
+    onUserChange();
   }
-}
+});
 
+// form submit: zbierz nazwę z path lub select
 wishlistForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   statusEl.textContent = "Zapisywanie...";
-  const name = userSelect.value;
-  const entries = [];
-  for (let i = 0; i < 5; i++) {
-    const url = wishlistForm.querySelector(`[name="url_${i}"]`).value.trim();
-    const note = wishlistForm.querySelector(`[name="note_${i}"]`).value.trim();
-    if (url !== "" || note !== "") {
-      entries.push({ url, note });
-    }
-  }
+  const name = currentNameFromPath || userSelect.value;
+  const rows = Array.from(wishRows.querySelectorAll(".wish-row"));
+  const entries = rows
+    .map((r) => {
+      const url = (r.querySelector(".wish-url")?.value || "").trim();
+      const note = (r.querySelector(".wish-note")?.value || "").trim();
+      return { url, note };
+    })
+    .filter((it) => it.url !== "" || it.note !== "");
+
   try {
     const res = await fetch("/wishlist", {
       method: "POST",
@@ -105,9 +242,10 @@ wishlistForm.addEventListener("submit", async (e) => {
     const data = await res.json();
     if (res.ok) {
       statusEl.textContent = "Zapisano";
-      // refresh users and assigned view
       await fetchUsers();
-      await onUserChange();
+      // jeśli jesteśmy na stronie użytkownika, odśwież widok
+      if (currentNameFromPath) await onUserChange(currentNameFromPath);
+      else await onUserChange();
     } else {
       statusEl.textContent = data.error || "Błąd";
     }
@@ -116,8 +254,6 @@ wishlistForm.addEventListener("submit", async (e) => {
   }
   setTimeout(() => (statusEl.textContent = ""), 2500);
 });
-
-userSelect.addEventListener("change", onUserChange);
 
 // init
 fetchUsers();

@@ -1,12 +1,36 @@
 {
   "users": [
-    { "name": "Ania", "wishlist": [] },
-    { "name": "Bartek", "wishlist": [] },
-    { "name": "Celina", "wishlist": [] },
-    { "name": "Daniel", "wishlist": [] },
-    { "name": "Ewa", "wishlist": [] },
-    { "name": "Filip", "wishlist": [] },
-    { "name": "Gosia", "wishlist": [] },
-    { "name": "Hubert", "wishlist": [] }
+    {
+      "name": "Rafał",
+      "wishlist": []
+    },
+    {
+      "name": "Justyna",
+      "wishlist": []
+    },
+    {
+      "name": "Janusz",
+      "wishlist": []
+    },
+    {
+      "name": "Violetta",
+      "wishlist": []
+    },
+    {
+      "name": "Babcia Misia",
+      "wishlist": []
+    },
+    {
+      "name": "Babcia Irena",
+      "wishlist": []
+    },
+    {
+      "name": "Karol",
+      "wishlist": []
+    },
+    {
+      "name": "Hania",
+      "wishlist": []
+    }
   ]
 }

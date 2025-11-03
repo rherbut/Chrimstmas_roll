@@ -8,28 +8,49 @@
   </head>
   <body>
     <main class="container">
-      <h1>Secret Santa — Lista życzeń</h1>
+      <h1 id="mainTitle">Secret Santa — Lista życzeń</h1>
 
-      <label for="userSelect">Wybierz swoje imię:</label>
-      <select id="userSelect"></select>
+      <!-- banner pokazujący aktualne imię na podstronie /Imie -->
+      <div
+        id="userBanner"
+        class="user-banner"
+        style="display: none"
+        aria-live="polite"
+      >
+        <span class="ub-label">Twoje imię:</span>
+        <span id="userBannerName" class="ub-name">—</span>
+      </div>
 
-      <section id="assignedSection" class="card">
-        <h2>Twoja przypisana osoba:</h2>
-        <p id="assignedName">—</p>
+      <label id="userLabel" for="userSelect">Wybierz swoje imię:</label>
+      <select id="userSelect">
+        <option value="" disabled selected>-- Wybierz imię --</option>
+      </select>
+
+      <section id="assignedSection" class="card" style="display: none">
+        <h2>
+          Twoja przypisana osoba:
+          <span id="assignedName" class="assigned-inline">—</span>
+        </h2>
         <ul id="assignedWishlist" class="wishlist"></ul>
       </section>
 
-      <section class="card">
+      <section id="editSection" class="card" style="display: none">
         <h2>Edytuj swoją listę życzeń (maks. 5)</h2>
         <form id="wishlistForm">
+          <div class="wish-controls">
+            <button type="button" id="addWish">+ Dodaj życzenie</button>
+            <div class="hint">URL nad notatką, możesz dodać do 5 pozycji</div>
+          </div>
+
           <div id="wishRows"></div>
+
           <div class="actions">
             <button type="submit">Zapisz</button>
             <span id="status" class="status"></span>
           </div>
         </form>
       </section>
-      <footer>Prosta aplikacja — HTML, CSS, vanilla JS, Node/Express</footer>
+      <footer>Święta 2025</footer>
     </main>
 
     <script src="script.js"></script>
