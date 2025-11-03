@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Secret Santa — Lista życzeń</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Secret Santa — Lista życzeń</h1>
+
+      <label for="userSelect">Wybierz swoje imię:</label>
+      <select id="userSelect"></select>
+
+      <section id="assignedSection" class="card">
+        <h2>Twoja przypisana osoba:</h2>
+        <p id="assignedName">—</p>
+        <ul id="assignedWishlist" class="wishlist"></ul>
+      </section>
+
+      <section class="card">
+        <h2>Edytuj swoją listę życzeń (maks. 5)</h2>
+        <form id="wishlistForm">
+          <div id="wishRows"></div>
+          <div class="actions">
+            <button type="submit">Zapisz</button>
+            <span id="status" class="status"></span>
+          </div>
+        </form>
+      </section>
+      <footer>Prosta aplikacja — HTML, CSS, vanilla JS, Node/Express</footer>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

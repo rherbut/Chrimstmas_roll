@@ -1,0 +1,12 @@
+{
+  "users": [
+    { "name": "Ania", "wishlist": [] },
+    { "name": "Bartek", "wishlist": [] },
+    { "name": "Celina", "wishlist": [] },
+    { "name": "Daniel", "wishlist": [] },
+    { "name": "Ewa", "wishlist": [] },
+    { "name": "Filip", "wishlist": [] },
+    { "name": "Gosia", "wishlist": [] },
+    { "name": "Hubert", "wishlist": [] }
+  ]
+}
