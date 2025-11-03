@@ -1,10 +1,10 @@
 {
-  "Rafał": "Justyna",
-  "Justyna": "Janusz",
-  "Janusz": "Violetta",
-  "Violetta": "Babcia Misia",
-  "Babcia Misia": "Babcia Irena",
-  "Babcia Irena": "Karol",
-  "Karol": "Hania",
-  "Hania": "Rafał"
+  "Rafał": "Hania",
+  "Justyna": "Karol",
+  "Janusz": "Babcia Misia",
+  "Violetta": "Rafał",
+  "Babcia Misia": "Justyna",
+  "Babcia Irena": "Janusz",
+  "Karol": "Violetta",
+  "Hania": "Babcia Irena"
 }
